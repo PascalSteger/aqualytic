@@ -1,0 +1,26 @@
+Project Aqualytic TODOs
+==================
+
+* DONE download runoff data
+* DONE convert data to csv
+* DONE read in data
+* DONE set up all variables
+* DONE set up easy forecasting using previous year's data copied over
+* DONE forecast in log space, averaging
+* DONE forecast in lin space, averaging with moving window, exponentially decaying window
+* DONE forecast in log space, averaging with moving window, exponentially decaying window
+* WAITING forecast with Fourier decomposition                       :WAITING:
+  - State "WAITING"    from "TODO"       [2014-10-11 Sat 20:55] \\
+    for rfftw and irfftw documentation on averaging, exclusion of higher order wiggles
+* TODO forecast with MCMC to sample parameter space = modes of Fourier transformation
+* DONE write down differential equation for water reservoir
+* DONE implement spline fitting based on last N entries
+  - State "DONE"       from "HOLD"       [2014-10-11 Sat 17:26]
+  - State "HOLD"       from "TODO"       [2014-10-11 Sat 13:55] \\
+    revert knowBase code part
+* TODO solve PDE system
+* DONE set up Neural Network with 2 layers to learn influence of snow height on peak height later on
+** DONE download pybrain, compile it
+* TODO use all information from all rivers to restrict it
+* TODO handle NaN in Neural Network
+** TODO first guess: fill in data from archival (or long-term average) values.

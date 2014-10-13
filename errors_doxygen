@@ -1,0 +1,6 @@
+/home/psteger/projects/hackaton/Aqua/forecast.py:11: warning: the name `imomo.py' supplied as the second argument in the \file statement is not an input file
+/home/psteger/projects/hackaton/Aqua/fc_fourier.py:34: warning: Found unknown command `\coeff'
+/home/psteger/projects/hackaton/Aqua/fc_fourier.py:34: warning: Found unknown command `\coeff'
+/home/psteger/projects/hackaton/Aqua/fc_fourier.py:34: warning: Found unknown command `\coeff'
+/home/psteger/projects/hackaton/Aqua/fc_fourier.py:34: warning: Found unknown command `\coeff'
+/home/psteger/projects/hackaton/Aqua/fc_fourier.py:35: warning: End of list marker found without any preceding list items
