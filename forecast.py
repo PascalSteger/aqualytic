@@ -14,38 +14,18 @@
 ## output verbosity
 DEBUGLEVEL = 3
 
-import pdb, os, time
+import pdb, os
 import numpy as np
 # for advanced timestamp and timeseries handling: use pandas
-import pandas
-
-# for plotting:
+import pandas as pd
+from scipy.interpolate import splrep, splev
 import matplotlib
 matplotlib.use('tkagg')
-import matplotlib.pyplot as plt
-from matplotlib.backends.backend_pdf import PdfPages
 from pylab import *
 
-# interpolation
-from scipy.interpolate import splrep, splev
-import fc_fourier
-
-# own basic definitions
+import gl_helper as gh
 import gl_file
-
-
-def LOG(level, message, var=''):
-    if level > DEBUGLEVEL:
-        return
-    t = time.time()
-    print(time.ctime(t), message, var)
-    return
-## \fn LOG(level, warning, var)
-# print debugging message if level is important enough
-# @param level 0: none, 1: some, 2: more, 3: all
-# @param warning string
-# @param var variable (not mandatory)
-
+import fc_fourier
 
 if __name__ == "__main__":
     ## use commandline parameters for most common specifications
@@ -56,17 +36,34 @@ if __name__ == "__main__":
     import gl_data as data
 
     # Process river that will be run through the forecast
-    if gp.fcT == 'decadal':
-        tRiver = data.Q_Dec[:, 0]
-        qRiver = gp.fill_longterm(tRiver, data.Q_Dec[:, iRiver+1])
-        pRiver = gp.fill_longterm(tRiver, data.P_Dec_ERA40[:, iRiver+1])
-        TRiver = gp.fill_longterm(tRiver, data.T_Dec_ERA_All[:, iRiver+1])
-    elif gp.fcT == 'monthly':
-        tRiver = data.Q_Mon[:, 0]
-        qRiver = gp.fill_longterm(tRiver, data.Q_Mon[:, iRiver+1])
-        pRiver = np.zeros(len(tRiver))
-        # TODO get data, then fill_longterm(data.P_Mon_ERA40[:, iRiver+1])
-        TRiver = gp.fill_longterm(tRiver, data.T_Mon_ERA_All[:, iRiver+1])
+    # if gp.fcT == 'decadal':
+    #     tRiver = data.Q_Dec[:, 0]
+    #     qRiver = gp.fill_longterm(tRiver, data.Q_Dec[:, iRiver+1])
+    #     pRiver = gp.fill_longterm(tRiver, data.P_Dec_ERA40[:, iRiver+1])
+    #     TRiver = gp.fill_longterm(tRiver, data.T_Dec_ERA_All[:, iRiver+1])
+    # elif gp.fcT == 'monthly':
+    #     tRiver = data.Q_Mon[:, 0]
+    #     qRiver = gp.fill_longterm(tRiver, data.Q_Mon[:, iRiver+1])
+    #     pRiver = np.zeros(len(tRiver))
+    #     # TODO get data, then fill_longterm(data.P_Mon_ERA40[:, iRiver+1])
+    #     TRiver = gp.fill_longterm(tRiver, data.T_Mon_ERA_All[:, iRiver+1])
+
+
+    # better: read in all data via pandas
+    datqdec = pd.read_csv('data/data_Q_Dec.csv')
+    datpdec = pd.read_csv('data/data_P_Dec_ERA40.csv')
+    datpdecint = pd.read_csv('data/data_P_Dec_ERAint.csv')
+    dattdec = pd.read_csv('data/data_T_Dec_ERA_All.csv')
+
+    datqmon = pd.read_csv('data/data_Q_Mon.csv')
+    dattmon = pd.read_csv('data/data_T_Mon_ERA_All.csv')
+
+    datmetpdec = pd.read_csv("data/data_P_Dec_MetStations.csv")
+    datmetpmon = pd.read_csv("data/data_P_Mon_MetStations.csv")
+
+    # TODO convert each timestamp in the above datasets
+    ipdb.set_trace()
+    dataqdec = gh.convert_timestamps(datqdec)
 
 
     ### calculate allowable error according to Andrey
@@ -234,7 +231,7 @@ if __name__ == "__main__":
         prediction = np.array(json.load(open("output/prediction.json", "r")))
 
     Q_forecast = np.array(Q_forecast)
-    LOG(1,'FORECASTING DONE!')
+    gh.LOG(1,'FORECASTING DONE!')
 
     ## Evaluation
     sel = (T_forecast > tS)*(T_forecast < tE)
@@ -303,15 +300,15 @@ if __name__ == "__main__":
     errMSE = np.nanmean(err**2)
 
 
-    LOG(1,'Error Metrics')
-    LOG(1,'=============')
-    LOG(1, 'MAE: ', errMAE)
-    LOG(1, 'RMS: ', errRMS)
-    LOG(1, 'MSE: ', errMSE)
+    gh.LOG(1,'Error Metrics')
+    gh.LOG(1,'=============')
+    gh.LOG(1, 'MAE: ', errMAE)
+    gh.LOG(1, 'RMS: ', errRMS)
+    gh.LOG(1, 'MSE: ', errMSE)
 
     # long-term
     fcQualityAndrey = np.nanstd(err) / np.nanstd(qRiver)
-    LOG(1, 'FQC: ', fcQualityAndrey)
+    gh.LOG(1, 'FQC: ', fcQualityAndrey)
 
     if gp.fcT == 'decadal':
         fcstr = ' - Decadal Forecast'
